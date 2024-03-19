@@ -3,12 +3,13 @@ based on Andrej Karpathy's GPT lecture:
 https://youtu.be/kCc8FmEb1nY?si=pHVr7LpfKvYyZ4Dj
 """
 import torch
-import tiktoken
+import os
+from tokenizer import CharTokenizer
 from model import GPT, GPTConfig
 
 # hyperparameters
 batch_size = 64
-block_size = 64
+block_size = 128
 n_layer = 6
 n_head = 6
 n_embd = 384
@@ -23,24 +24,23 @@ device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 
 torch.manual_seed(1337)
 
-with open('data/my-cp-codes.txt', 'r', encoding='utf-8') as f:
-    text = f.read()
+# open files
+texts = []
+def open_files(root_dir):
+    for root, _, files in os.walk(root_dir):
+        for file in files:
+            if file.endswith('.txt'):
+                file_path = os.path.join(root, file)
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    texts.append(f.read())
+open_files('data/my-codes')
+text = '\n'.join(texts)
 
-# here are all the unique characters that occur in this text
-chars = sorted(list(set(text)))
-vocab_size = len(chars)
-
-# create a mapping from characters to integers
-stoi = { ch:i for i, ch in enumerate(chars) }
-itos = { i:ch for i, ch in enumerate(chars) }
-encode = lambda s: [stoi[c] for c in s]
-decode = lambda l: ''.join([itos[i] for i in l])
-
-# openai tokenizer tiktoken: https://github.com/openai/tiktoken
-# enc = tiktoken.encoding_for_model('gpt-2')
+# tokenize
+tok = CharTokenizer()
+data = torch.tensor(tok.encode(text), dtype=torch.int64)
 
 # train and test splits
-data = torch.tensor(encode(text), dtype=torch.int64)
 n = int(0.9 * len(data))
 train_data = data[:n]
 val_data = data[n:]
@@ -69,8 +69,7 @@ def estimate_loss():
     return out
 
 # instantiate the model
-model_args = dict(block_size=block_size, vocab_size=vocab_size, n_layer=n_layer, n_head=n_head, n_embd=n_embd,
-                  dropout=dropout, bias=bias)
+model_args = dict(block_size=block_size, vocab_size=tok.vocab_size, n_layer=n_layer, n_head=n_head, n_embd=n_embd, dropout=dropout, bias=bias)
 gptconf = GPTConfig(**model_args)
 model = GPT(gptconf)
 m = model.to(device)
@@ -89,4 +88,4 @@ for iter in range(max_iters):
     optimizer.step()
 
 # save the model to disk
-torch.save(model.state_dict(), 'model1.pth')
+torch.save(model.state_dict(), 'model_weight/prototype-2.pth')
