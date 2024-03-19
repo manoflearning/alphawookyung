@@ -22,9 +22,9 @@ class Head(nn.Module):
     def forward(self, x):
         B, T, C = x.shape # (B, T, n_embd)
 
-        q = self.query(x)   # (B, T, head_size)
-        k = self.key(x)     # (B, T, head_size)
-        v = self.value(x)   # (B, T, head_size)
+        q = self.query(x) # (B, T, head_size)
+        k = self.key(x) # (B, T, head_size)
+        v = self.value(x) # (B, T, head_size)
 
         wei = q @ k.transpose(-2, -1) * C**-0.5 # (B, T, T)
         wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))
@@ -77,7 +77,7 @@ class Block(nn.Module):
 
 @dataclass
 class GPTConfig:
-    block_size: int = 1024
+    block_size: int = 128
     vocab_size: int = 98
     n_layer: int = 6
     n_head: int = 6

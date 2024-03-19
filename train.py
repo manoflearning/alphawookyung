@@ -37,7 +37,7 @@ encode = lambda s: [stoi[c] for c in s]
 decode = lambda l: ''.join([itos[i] for i in l])
 
 # openai tokenizer tiktoken: https://github.com/openai/tiktoken
-# enc = tiktoken.encoding_for_model("gpt-2")
+# enc = tiktoken.encoding_for_model('gpt-2')
 
 # train and test splits
 data = torch.tensor(encode(text), dtype=torch.int64)
@@ -87,10 +87,6 @@ for iter in range(max_iters):
     optimizer.zero_grad(set_to_none=True)
     loss.backward()
     optimizer.step()
-
-start_string = '#include <'
-context = torch.tensor(encode(start_string), dtype=torch.int64, device=device).view((1, len(start_string)))
-print(decode(model.generate(context, max_new_tokens=500)[0].tolist()))
 
 # save the model to disk
 torch.save(model.state_dict(), 'model1.pth')
