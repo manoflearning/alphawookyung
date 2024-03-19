@@ -1,0 +1,111 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define pii pair<int, int>
+#define fr first
+#define sc second
+#define sz(x) (int)(x).size()
+
+const int INF = 1e9 + 7;
+
+vector<int> p;
+
+int find(int x) {
+    if (p[x] < 0) return x;
+    return p[x] = find(p[x]);
+}
+
+void merge(int u, int v) {
+    int U = find(u), V = find(v);
+    if (U == V) return;
+    p[U] += p[V];
+    p[V] = U;
+}
+
+struct Edge {
+    int u, v, w;
+    bool operator<(const Edge& rhs) const {
+        return w < rhs.w;
+    }
+};
+
+int n, m, qcnt;
+vector<Edge> e;
+vector<pii> q;
+
+int l[101010], r[101010];
+int ans2[101010];
+
+void input() {
+    cin >> n >> m;
+    e.resize(m);
+    for (auto& i : e) 
+        cin >> i.u >> i.v >> i.w;
+
+    cin >> qcnt;
+    q.resize(qcnt);
+    for (auto& i : q)
+        cin >> i.fr >> i.sc;
+}
+
+void init() {
+    for (int i = 0; i < qcnt; i++) {
+        r[i] = m;
+    }
+}
+
+void pbs() {
+    while (1) {
+        vector<pii> a;
+        for (int i = 0; i < qcnt; i++) {
+            if (l[i] == r[i]) continue;
+            int mid = (l[i] + r[i]) >> 1;
+            a.push_back({ mid, i });
+        }
+
+        if (a.empty()) break;
+
+        sort(a.begin(), a.end());
+
+        p.clear();
+        p.resize(n + 1, -1);
+
+        int idx = 0;
+        for (int i = 0; i < sz(a); i++) {
+            int mid = a[i].fr, qidx = a[i].sc;
+
+            while (idx < m && idx <= mid) {
+                merge(e[idx].u, e[idx].v);
+                idx++;
+            }
+
+            int u = q[qidx].fr, v = q[qidx].sc;
+            if (find(u) ^ find(v)) l[qidx] = mid + 1;
+            else {
+                ans2[qidx] = -p[find(u)];
+                r[qidx] = mid;
+            }
+        }
+    }
+}
+
+int main() {
+
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    input();
+
+    init();
+
+    sort(e.begin(), e.end());
+
+    pbs();
+
+    for (int i = 0; i < qcnt; i++) {
+        if (l[i] < m) cout << e[l[i]].w << ' ' << ans2[i] << '\n';
+        else cout << -1 << '\n';
+    }
+
+    return 0;
+}
+ 

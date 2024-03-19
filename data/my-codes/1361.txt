@@ -1,0 +1,23 @@
+#include <stdio.h>
+
+int i;
+
+int factorial(int N) {
+
+	int result=1;
+	
+	for(i=1; i<=N; i++)
+		result*=i;
+		
+	return result;
+}
+
+int main (void) {
+	int N;
+	
+	scanf("%d", &N);
+	
+	printf("%d", factorial(N));
+	
+	return 0;
+}

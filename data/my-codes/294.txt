@@ -1,0 +1,47 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define pii pair<int, int>
+#define fr first
+#define sc second
+
+int n, a[15][15];
+vector<pii> idx[2];
+vector<pii> prv;
+
+int bt(int x, int parity) {
+    if (x == idx[parity].size()) return prv.size();
+
+    int ret = 0, pos = 1;
+    auto& it = idx[parity][x];
+    for (auto& i : prv) {
+        if (abs(i.fr - it.fr) == abs(i.sc - it.sc)) { pos = 0; break; }
+    }
+
+    ret = max(ret, bt(x + 1, parity));
+
+    if (pos) {
+        prv.push_back(it);
+        ret = max(ret, bt(x + 1, parity));
+        prv.pop_back();
+    }
+
+    return ret;
+}
+
+int main() {
+
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        for (int j = 1; j <= n; j++) {
+            cin >> a[i][j];
+            if (a[i][j]) {
+                idx[(i + j) & 1].push_back({ i, j });
+            }
+        }
+    }
+
+    cout << bt(0, 0) + bt(0, 1);
+}

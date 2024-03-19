@@ -1,0 +1,32 @@
+set<int> arr[2020];
+class Solution {
+public:
+    int findMinimumTime(vector<vector<int>>& tasks) {
+        sort(tasks.begin(), tasks.end(), [&](const vector<int>& lhs, const vector<int>& rhs) {
+            if (lhs[1] ^ rhs[1]) return lhs[1] < rhs[1];
+            else return lhs[0] < rhs[0];
+        });
+        
+        vector<int> vi(2020);
+        
+        for (int i = 0; i < tasks.size(); i++) {
+            auto& it = tasks[i];
+            
+            for (int i = it[1]; i >= it[0]; i--)
+                if (vi[i]) it[2]--;
+            if (it[2] <= 0) continue;
+            
+            for (int i = it[1]; i >= it[0]; i--) {
+                if (!it[2]) break;
+                
+                if (!vi[i]) { vi[i] = 1, it[2]--; }
+            }
+        }
+        
+        int ret = 0;
+        for (auto& i : vi) ret += i;
+        
+        return ret;
+    }
+
+};

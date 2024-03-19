@@ -1,0 +1,23 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+
+int main() {
+
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    int tc; cin >> tc;
+    while (tc--) {
+        int N; cin >> N;
+        if (N == 1 || N == 2 || N == 3 || N == 6) {
+            cout << 0 << '\n';
+            continue;
+        }
+        if (N == 4) {
+            cout << 2 << '\n';
+            continue;
+        }
+        cout << 1 << '\n';
+    }
+}

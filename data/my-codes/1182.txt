@@ -1,0 +1,113 @@
+#include <iostream>
+#include <vector>
+#include <cstring>
+using namespace std;
+#define ll long long
+#define sz(x) (int)(x).size()
+
+struct Node {
+    ll x; int l, r;
+};
+
+const int MAX = 100001;
+
+vector<Node> t(2, { 0, -1, -1 });
+int head[MAX + 1];
+
+void pinit(int n = 1, int nl = 1, int nr = MAX) {
+    if (nl == nr) return;
+
+    int mid = (nl + nr) >> 1;
+
+    t[n].l = sz(t);
+    t.push_back({ 0, -1, -1 });
+    pinit(t[n].l, nl, mid);
+
+    t[n].r = sz(t);
+    t.push_back({ 0, -1, -1 });
+    pinit(t[n].r, mid + 1, nr);
+}
+
+void modify(int p, ll x, int n, int nl = 1, int nr = MAX) {
+    if (nl == nr) return;
+        
+    int mid = (nl + nr) >> 1;
+        
+    if (p <= mid) {
+        int lidx = t[n].l;
+        t[n].l = sz(t);
+        t.push_back({ t[lidx].x + x, t[lidx].l, t[lidx].r });
+        modify(p, x, t[n].l, nl, mid);
+    }
+    else {
+        int ridx = t[n].r;
+        t[n].r = sz(t);
+        t.push_back({ t[ridx].x + x, t[ridx].l, t[ridx].r });
+        modify(p, x, t[n].r, mid + 1, nr);
+    }
+}
+
+ll query(int l, int r, int n, int nl, int nr) {
+    if (nr < l || r < nl) return 0;
+    if (l <= nl && nr <= r) return t[n].x;
+    int mid = (nl + nr) >> 1;
+    return query(l, r, t[n].l, nl, mid) + query(l, r, t[n].r, mid + 1, nr);
+}
+
+int n, m;
+vector<int> yidx[MAX + 1];
+
+void init() {
+    t.resize(2);
+    t[1] = { 0, -1, -1 };
+    memset(head, 0, sizeof(head));
+    head[0] = 1;
+    pinit();
+
+    for (int i = 0; i < MAX + 1; i++) yidx[i].clear();
+}
+
+void input() {
+    cin >> n >> m;
+    while (n--) {
+        int x, y;
+        cin >> x >> y;
+        x++, y++;
+        yidx[x].push_back(y);
+    }
+}
+
+int main() {	
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    int tc; cin >> tc;
+    while (tc--) {
+        init();
+
+        input();
+
+        for (int i = 1; i <= MAX; i++) {
+            if (head[i] == 0) {
+                head[i] = sz(t);
+                t.push_back({ t[head[i - 1]].x, t[head[i - 1]].l, t[head[i - 1]].r });
+            }
+            for (auto y : yidx[i]) {
+                t[head[i]].x++;
+                modify(y, 1, head[i]);
+            }
+        }
+
+        ll ans = 0;
+        while (m--) {
+            int sx, ex, sy, ey;
+            cin >> sx >> ex >> sy >> ey;
+            sx++, ex++, sy++, ey++;
+            ans += query(sy, ey, head[ex], 1, MAX) - query(sy, ey, head[sx - 1], 1, MAX);
+        }
+
+        cout << ans << '\n';
+    }
+
+    return 0;
+}

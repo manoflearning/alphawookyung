@@ -1,0 +1,104 @@
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
+using namespace std;
+#define ll long long
+#define ld long double
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+#define fr first
+#define sc second
+#define vt vector
+#define all(c) (c).begin(), (c).end()
+#define sz(x) (int)(x).size()
+
+#define EXPAND( x ) x 
+#define F_OR(i, a, b, s) for (int i = (a); (s) > 0 ? i < (b) : i > (b); i += (s))
+#define F_OR1(e) F_OR(i, 0, e, 1)
+#define F_OR2(i, e) F_OR(i, 0, e, 1)
+#define F_OR3(i, b, e) F_OR(i, b, e, 1)
+#define F_OR4(i, b, e, s) F_OR(i, b, e, s)
+#define GET5(a, b, c, d, e, ...) e
+#define F_ORC(...) EXPAND( GET5(__VA_ARGS__, F_OR4, F_OR3, F_OR2, F_OR1) )
+#define FOR(...) EXPAND( F_ORC(__VA_ARGS__ )(__VA_ARGS__) )
+#define EACH(x, a) for (auto& x : a)
+
+const double EPS = 1e-9;
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1, 1, 1, -1, -1 };
+const int dx[] = { 1, -1, 0, 0, 1, -1, 1, -1 };
+
+const int MAX = 5e6;
+
+bool isPrime[MAX + 1];
+vector<int> prime(1, 2);
+
+void getPrime() {
+	fill(isPrime + 2, isPrime + MAX + 1, 1);
+
+	for (ll i = 4; i <= MAX; i += 2)
+		isPrime[i] = 0;
+	for (ll i = 3; i <= MAX; i++) {
+		if (isPrime[i]) prime.push_back(i);
+		for (ll j = i * i; j <= MAX; j += i * 2)
+			isPrime[j] = 0;
+	}
+}
+
+int n, visited[MAX + 1];
+ll sum1, sum2;
+set<int> s1, s2;
+
+int main() {
+
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
+    getPrime();
+
+    cin >> n;
+
+    FOR(n) {
+        int a, b;
+        cin >> a >> b;
+
+        if (!isPrime[a]) {
+            if (sz(s2) < 3) sum2 += 1000;
+            else {
+                auto it = s2.end();
+                it--, it--, it--;
+                sum2 += *it;
+            }
+        }
+        else if (visited[a]) {
+            sum1 -= 1000;
+        }
+        else {
+            visited[a] = 1;
+            s1.insert(a);
+        }
+
+        if (!isPrime[b]) {
+            if (sz(s1) < 3) sum1 += 1000;
+            else {
+                auto it = s1.end();
+                it--, it--, it--;
+                sum1 += *it;
+            }
+        }
+        else if (visited[b]) {
+            sum2 -= 1000;
+        }
+        else {
+            visited[b] = 1;
+            s2.insert(b);
+        }
+    }
+
+    if (sum1 > sum2) cout << "소수의 신 갓대웅";
+    else if (sum1 < sum2) cout << "소수 마스터 갓규성";
+    else cout << "우열을 가릴 수 없음";
+
+	return 0;
+}

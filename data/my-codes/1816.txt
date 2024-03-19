@@ -1,0 +1,45 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+#define pii pair<int, int>
+#define fr first
+#define sc second
+#define sz(x) (int)(x).size()
+#define all(x) (x).begin(), (x).end()
+
+const int MOD = 10'007;
+
+int n, binom[101][101];
+
+void preprocessing() {
+    binom[0][0] = 1;
+    for (int i = 1; i <= 100; i++) {
+        for (int j = 0; j <= i; j++) {
+            binom[i][j] = binom[i - 1][j];
+            if (j > 0) binom[i][j] = (binom[i][j] + binom[i - 1][j - 1]) % MOD;
+        }
+    }
+}
+
+int main() {
+
+    cin.tie(NULL); cout.tie(NULL);
+    ios_base::sync_with_stdio(false);
+
+    preprocessing();
+
+    cin >> n;
+    
+    if (n <= 3) cout << 0;
+    else {
+        int ans = 0;
+        for (int cnt = 1; cnt <= 13; cnt++) {
+            if (n < 4 * cnt) break;
+            int res = binom[13][cnt] * binom[52 - 4 * cnt][n - 4 * cnt] % MOD;
+            ans = (ans + (cnt & 1 ? res : -res)) % MOD;
+        }
+        ans = (ans + MOD) % MOD;
+        
+        cout << ans;
+    }
+}

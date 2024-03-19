@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define pll pair<ll, ll>
+#define fr first
+#define sc second
+
+ll phi(ll x) {
+    vector<pll> p;
+
+    for (ll i = 2; i <= sqrt(x); i++) {
+        ll res = 1;
+        while (x % i == 0) {
+            x /= i, res *= i;
+        }
+        if (res > 1) p.push_back({ res, i });
+    }
+    if (x > 1) p.push_back({ x, x });
+
+    ll ret = 1;
+    for (auto& i : p) {
+        ret *= (i.fr / i.sc) * (i.sc - 1);
+    }
+
+    return ret;
+}
+
+int main() {
+    ll n; cin >> n;
+    cout << phi(n);
+
+    return 0;
+}

@@ -1,0 +1,51 @@
+#define _USE_MATH_DEFINES
+#include <bits/stdc++.h>
+#include <cassert>
+using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+
+const int MAX = 11;
+
+struct dv {
+    int d, v;
+};
+
+bool cmp(dv n1, dv n2) {
+    return n1.d > n2.d;
+}
+
+vector<dv> a(MAX);
+
+void input() {
+    for(auto& i : a) 
+        cin >> i.d >> i.v;
+}
+
+int f() {
+    int ret = 0;
+    
+    for (int i = 0; i < MAX; i++)
+        ret += (i + 1) * a[i].d + 20 * a[i].v;
+    
+    return ret;
+}
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+	
+	input();
+	
+	sort(a.begin(), a.end(), cmp);
+	
+	cout << f();
+	
+	return 0;
+}

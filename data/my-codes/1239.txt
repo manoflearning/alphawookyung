@@ -1,0 +1,46 @@
+#include "findVertices.h"
+#include <bits/stdc++.h>
+using namespace std;
+#define sz(x) (int)(x).size()
+
+void dnc(vector<int> S) {
+    if (sz(S) <= 1) return;
+    if (sz(S) == 2) {
+        if (query({}, {}, S[0], S[1])) {
+            answer(S[0], S[1]);
+            exit(0);
+        }
+        return;
+    }
+
+    int ub = (sz(S) + 1) / 2;
+    vector<int> A, B;
+    for (auto& i : S) {
+        if (sz(A) == ub) B.push_back(i);
+        else if (sz(B) == ub) A.push_back(i);
+        else if (rand() % 2) A.push_back(i);
+        else B.push_back(i);
+    }
+
+    vector<int> U, V;
+    for (int i = 0; i + 1 < sz(A); i++) {
+        U.push_back(A[i]);
+        V.push_back(A[i + 1]);
+    }
+    for (int i = 0; i + 1 < sz(B); i++) {
+        U.push_back(B[i]);
+        V.push_back(B[i + 1]);
+    }
+
+    if (query(U, V, A[0], B[0])) dnc(S);
+    else { dnc(A); dnc(B); }
+}
+
+void find(int N) {
+    srand(time(NULL));
+
+    vector<int> S;
+    for (int i = 1; i <= N; i++) 
+        S.push_back(i);
+    dnc(S);
+}

@@ -1,0 +1,28 @@
+#include <iostream>
+using namespace std;
+
+const int MAX = 10000;
+
+int n;
+long long int dp[MAX + 1];
+
+long long int handshake(int x);
+
+int main() {
+	scanf("%d", &n);
+
+	printf("%lld", handshake(n));
+
+	return 0;
+}
+
+long long int handshake(int x) {
+	if (dp[x] != 0) return dp[x];
+	if (x == 0 || x == 2) return 1;
+	for (int i = 2; i <= x; i += 2) {
+		dp[x] += handshake(i - 2) * handshake(x - i);
+		dp[x] %= 987654321;
+	}
+
+	return dp[x];
+}

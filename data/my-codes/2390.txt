@@ -1,0 +1,44 @@
+
+#include <bits/stdc++.h>
+using namespace std;
+#define ll long long
+#define pii pair<int, int>
+#define pll pair<ll, ll>
+
+const int INF = 1e9 + 7;
+const int MOD = 1e9 + 7;
+const int dy[] = { 0, 0, 1, -1 };
+const int dx[] = { 1, -1, 0, 0 };
+const long double PI = 3.141592653589793238462643383279502884197;
+
+int main() {
+	cin.tie(NULL); cout.tie(NULL);
+	ios_base::sync_with_stdio(false);
+
+	int n; cin >> n;
+
+	vector<int> a(n);
+	for (int& i : a) cin >> i;
+
+	vector<int> b;
+	for (int i = 0; i < a.size(); i += 2) b.push_back(a[i]);
+	for (int i = 1; i < a.size(); i += 2) b.push_back(a[i]);
+
+	ll ans = -1, sum = 0;
+	for (int i = 0; i < (n + 1) / 2; i++) sum += b[i];
+	
+	ans = max(ans, sum);
+	for (int L = 1; L != 0; L = (L + 1) % b.size()) {
+		int R = (L + (n + 1) / 2 - 1) % b.size();
+		if (R == b.size()) break;
+
+		sum -= b[L - 1];
+		sum += b[R];
+		
+		ans = max(ans, sum);
+	}
+
+	cout << ans;
+
+	return 0;
+}
