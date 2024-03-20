@@ -1,3 +1,7 @@
+"""
+based on Andrej Karpathy's GPT lecture:
+https://youtu.be/kCc8FmEb1nY?si=pHVr7LpfKvYyZ4Dj
+"""
 import torch
 import torch.nn as nn
 from torch.nn import functional as F
