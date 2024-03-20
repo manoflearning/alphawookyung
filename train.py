@@ -5,11 +5,11 @@ https://youtu.be/kCc8FmEb1nY?si=pHVr7LpfKvYyZ4Dj
 import torch
 import os
 from tokenizer import CharTokenizer
-from model import GPT, GPTConfig
+from modelv2 import GPT, GPTConfig
 
 # hyperparameters
 batch_size = 64
-block_size = 128
+block_size = 256
 n_layer = 6
 n_head = 6
 n_embd = 384
@@ -17,7 +17,7 @@ max_iters = 5000
 eval_iters = 200
 eval_interval = 500
 learning_rate = 3e-4
-dropout = 0.1
+dropout = 0.2
 bias = False
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 # ---------------
@@ -34,6 +34,8 @@ def open_files(root_dir):
                 with open(file_path, 'r', encoding='utf-8') as f:
                     texts.append(f.read())
 open_files('data/my-codes')
+
+sorted(texts, key=lambda x: torch.rand(1))
 text = '\n'.join(texts)
 
 # tokenize
@@ -88,4 +90,4 @@ for iter in range(max_iters):
     optimizer.step()
 
 # save the model to disk
-torch.save(model.state_dict(), 'model_weight/prototype-2.pth')
+torch.save(model.state_dict(), 'model_weight/prototype-5.pth')

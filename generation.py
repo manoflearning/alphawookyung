@@ -8,9 +8,12 @@ torch.manual_seed(1337)
 tok = CharTokenizer()
 
 # load the model from the .pth file
-model = GPT(GPTConfig(block_size=64, vocab_size=tok.vocab_size, n_layer=6, n_head=6, n_embd=384, dropout=0.1, bias=False))
+print('Enter the model name: ')
+user_model = input()
+print()
 
-model_path = 'model_weight/prototype.pth'
+model = GPT(GPTConfig(block_size=256, vocab_size=tok.vocab_size, n_layer=6, n_head=6, n_embd=384, dropout=0.2, bias=False))
+model_path = f'model_weight/{user_model}.pth'
 model.load_state_dict(torch.load(model_path))
 
 # set the model to evaluation mode
@@ -31,7 +34,7 @@ while True:
     print('Response:')
     print(f'{tok.decode(context[0].tolist())}', end='')
 
-    max_new_tokens = 800
+    max_new_tokens = 500
     for _ in range(max_new_tokens):
         # generate a response
         context = model.generate(context, max_new_tokens=1)
