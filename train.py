@@ -5,7 +5,7 @@ https://youtu.be/kCc8FmEb1nY?si=pHVr7LpfKvYyZ4Dj
 import torch
 import os
 from tokenizer import CharTokenizer
-from modelv2 import GPT, GPTConfig
+from model import GPT, GPTConfig
 
 # hyperparameters
 batch_size = 64
